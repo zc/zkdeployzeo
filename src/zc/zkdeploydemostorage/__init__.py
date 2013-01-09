@@ -4,8 +4,7 @@ import pwd
 import zc.metarecipe
 import zc.zk
 
-class ZKRecipe(
-zc.metarecipe.Recipe):
+class ZKRecipe(zc.metarecipe.Recipe):
 
     def __init__(self, buildout, name, options):
         super(ZKRecipe, self).__init__(buildout, name, options)
@@ -16,7 +15,7 @@ zc.metarecipe.Recipe):
         user = self.user = options.get('user', 'zope')
 
         self['deployment'] = dict(
-            recipe = 'zc.recipe.deployment',
+            recipe='zc.recipe.deployment',
             name=name,
             user=user,
             )
@@ -31,48 +30,47 @@ zc.metarecipe.Recipe):
         source_zookeeoper = zk_options.get('zookeeper', 'zookeeper:2181')
         blobs = zk_options.get('blobs', True)
 
-        ddir = '/home/databases'+path+'/'+before
+        ddir = '/home/databases' + path + '/' + before
 
-        self[name+'data-directory'] = dict(
-            recipe = 'z3c.recipe.mkdir',
-            paths = ddir,
-            user = self.user,
-            group = self.user,
+        self[name + 'data-directory'] = dict(
+            recipe='z3c.recipe.mkdir',
+            paths=ddir,
+            user=self.user,
+            group=self.user,
             **{'remove-on-update': 'true'})
 
-        self[name+'-storage'] = dict(
-            recipe = 'zc.zodbrecipes:server',
-            deployment = 'deployment',
+        self[name + '-storage'] = dict(
+            recipe='zc.zodbrecipes:server',
+            deployment='deployment',
             **{
                 'zeo.conf': zeo_conf % dict(
-                    ddir = ddir,
-                    before = before,
-                    zookeeper = source_zookeeoper,
-                    source_path = source_path,
-                    zblob = (
-                        'blob-dir %s/before.blobs\nblob-cache-size 100MB' % ddir
+                    ddir=ddir,
+                    before=before,
+                    zookeeper=source_zookeeoper,
+                    source_path=source_path,
+                    zblob=(
+                        'blob-dir %s/before.blobs\n'
+                        'blob-cache-size 100MB' % ddir
                         if blobs else ''),
-                    cblob = (
+                    cblob=(
                         'blob-dir %s/changes.blobs' % ddir
                         if blobs else ''),
-                    path = path,
+                    path=path,
                     ),
                 'shell-script': 'true',
                 'zdaemon.conf': zdaemon_conf % (
                     '${deployment:run-directory}/monitor.sock',
                     path),
-            })
+                })
 
         self['rc'] = dict(
-            recipe = 'zc.recipe.rhrc',
-            deployment = 'deployment',
-            parts = name+'-storage',
-            chkconfig = '345 99 10',
-            digest = hashlib.sha1(repr(sorted(zk_options.items()))).hexdigest(),
+            recipe='zc.recipe.rhrc',
+            deployment='deployment',
+            parts=name+'-storage',
+            chkconfig='345 99 10',
+            digest=hashlib.sha1(repr(sorted(zk_options.items()))).hexdigest(),
             **{'process-management': 'true'}
             )
-
-
 
 
 zeo_conf = """
@@ -124,6 +122,7 @@ zeo_conf = """
        </logfile>
    </eventlog>
 """
+
 zdaemon_conf = """
    <runner>
      start-test-program /opt/zkdeploydemostorage/bin/monitorcheck %s %s/providers
