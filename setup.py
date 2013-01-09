@@ -22,6 +22,8 @@ install_requires = ['setuptools', 'zc.metarecipe', 'zc.zk [static,test]']
 extras_require = dict(test=['zope.testing', 'manuel'])
 
 entry_points = """
+[zc.buildout]
+default = zc.zkdeploydemostorage:ZKDemoStorageRecipe
 """
 
 setup(

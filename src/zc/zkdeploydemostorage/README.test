@@ -19,8 +19,8 @@ The node specifies a base path and a before time.
 The recipe output a demo-storage configuration::
 
     >>> from zc.metarecipe.testing import Buildout
-    >>> from zc.zkdeploydemostorage import ZKRecipe
-    >>> _ = ZKRecipe(Buildout(), 'databases,main.0', {})
+    >>> from zc.zkdeploydemostorage import ZKDemoStorageRecipe
+    >>> _ = ZKDemoStorageRecipe(Buildout(), 'databases,main.0', {})
     [deployment]
     name = databases,main
     recipe = zc.recipe.deployment
@@ -50,8 +50,8 @@ The recipe output a demo-storage configuration::
            monitor-server ${deployment:run-directory}/monitor.sock
          </zookeeper>
     <BLANKLINE>
-         %import zc.beforestorage
          %import zc.zlibstorage
+         %import zc.beforestorage
     <BLANKLINE>
          <demostorage>
            <before base>
@@ -94,7 +94,7 @@ The recipe output a demo-storage configuration::
     process-management = true
     recipe = zc.recipe.rhrc
 
-By default, blobs are assumed.  You can override that. You can also
+By default, blobs are assumed.  You can override that.  You can also
 provide an alternative ZooKeeper server::
 
    /databases
@@ -107,7 +107,7 @@ provide an alternative ZooKeeper server::
 .. -> tree
 
     >>> zk.import_tree(tree)
-    >>> _ = ZKRecipe(Buildout(), 'databases,main.0', {})
+    >>> _ = ZKDemoStorageRecipe(Buildout(), 'databases,main.0', {})
     [deployment]
     name = databases,main
     recipe = zc.recipe.deployment
@@ -137,8 +137,8 @@ provide an alternative ZooKeeper server::
            monitor-server ${deployment:run-directory}/monitor.sock
          </zookeeper>
     <BLANKLINE>
-         %import zc.beforestorage
          %import zc.zlibstorage
+         %import zc.beforestorage
     <BLANKLINE>
          <demostorage>
            <before base>
