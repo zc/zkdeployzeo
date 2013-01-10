@@ -1,8 +1,8 @@
-Name: zkdeploydemostorage
+Name: zkzeoserver
 Version: 0
 Release: 1
 
-Summary: Demo-storage recipe
+Summary: ZEO server configured using zkdeployment
 Group: Applications/Database
 Requires: cleanpython26
 Requires: zcuser-zope
@@ -40,8 +40,8 @@ cp -r $RPM_BUILD_DIR/%{source} %{buildroot}/opt/%{name}
 rm -rf %{buildroot}/opt/%{name}/release-distributions
 
 # Gaaaa! buildout doesn't handle relative paths in egg links. :(
-sed -i s-/tmp/zkdeploydemostorage-- \
-   %{buildroot}/opt/%{name}/develop-eggs/zc-zrs-rpm-recipes.egg-link 
+sed -i s-/tmp/%{name}-- \
+   %{buildroot}/opt/%{name}/develop-eggs/*.egg-link 
 %clean
 rm -rf %{buildroot}
 rm -rf $RPM_BUILD_DIR/%{source}

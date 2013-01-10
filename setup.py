@@ -11,39 +11,40 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-name = 'zc.zkdeploydemostorage'
-version = '0.1'
+
+import os
+import setuptools
+
+name = 'zc.zkzeoserver'
+version = '0'
 description = """
 """
 
-import os
-from setuptools import setup, find_packages
 install_requires = ['setuptools', 'zc.metarecipe', 'zc.zk [static,test]']
 extras_require = dict(test=['zope.testing', 'manuel'])
 
 entry_points = """
 [zc.buildout]
-default = zc.zkdeploydemostorage:ZKDemoStorageRecipe
-demostorage = zc.zkdeploydemostorage:ZKDemoStorageRecipe
-filestorage = zc.zkdeploydemostorage:ZKDemoStorageRecipe
+default = zc.zkzeoserver:ZKFileStorageRecipe
+demostorage = zc.zkzeoserver:ZKDemoStorageRecipe
+filestorage = zc.zkzeoserver:ZKDemoStorageRecipe
 """
 
-setup(
-    name = name,
-    version = version,
-    author = 'Jim Fulton',
-    author_email = 'jim@zope.com',
-    description = description.split('\n', 1)[0],
-    long_description = description.split('\n', 1)[1].lstrip(),
-    license = 'ZPL 2.1',
-
-    packages = find_packages('src'),
-    namespace_packages = name.split('.')[:1],
-    package_dir = {'': 'src'},
-    install_requires = install_requires,
-    zip_safe = False,
+setuptools.setup(
+    name=name,
+    version=version,
+    author='Jim Fulton',
+    author_email='jim@zope.com',
+    description=description.split('\n', 1)[0],
+    long_description=description.split('\n', 1)[1].lstrip(),
+    license='ZPL 2.1',
+    packages=setuptools.find_packages('src'),
+    namespace_packages=name.split('.')[:1],
+    package_dir={'': 'src'},
+    install_requires=install_requires,
+    zip_safe=False,
     entry_points=entry_points,
-    extras_require = extras_require,
-    tests_require = extras_require['test'],
-    test_suite = name+'.tests.test_suite',
+    extras_require=extras_require,
+    tests_require=extras_require['test'],
+    test_suite=name+'.tests.test_suite',
     )

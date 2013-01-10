@@ -24,7 +24,7 @@ Create a basic file storage using a ZooKeeper node like this::
 
 The recipe generates a file-storage configuration with blobs enabled::
 
-    >>> from zc.zkdeploydemostorage import ZKFileStorageRecipe
+    >>> from zc.zkzeoserver import ZKFileStorageRecipe
     >>> _ = ZKFileStorageRecipe(Buildout(), 'databases,main.0', {})
     [deployment]
     name = databases,main
@@ -41,7 +41,7 @@ The recipe generates a file-storage configuration with blobs enabled::
     recipe = zc.zodbrecipes:server
     shell-script = true
     zdaemon.conf = <runner>
-        start-test-program /opt/zkdeploydemostorage/bin/monitorcheck ${deployment:run-directory}/monitor.sock /databases/main/providers
+        start-test-program /opt/zkzeoserver/bin/monitorcheck ${deployment:run-directory}/monitor.sock /databases/main/providers
       </runner>
     zeo.conf = <zeo>
         address :0
@@ -109,7 +109,7 @@ The generated zeo.conf no longer includes the blob settings::
     recipe = zc.zodbrecipes:server
     shell-script = true
     zdaemon.conf = <runner>
-        start-test-program /opt/zkdeploydemostorage/bin/monitorcheck ${deployment:run-directory}/monitor.sock /databases/main/providers
+        start-test-program /opt/zkzeoserver/bin/monitorcheck ${deployment:run-directory}/monitor.sock /databases/main/providers
       </runner>
     zeo.conf = <zeo>
         address :0
@@ -168,7 +168,7 @@ The node specifies a base path and a before time.
 
 The recipe generates a demo-storage configuration::
 
-    >>> from zc.zkdeploydemostorage import ZKDemoStorageRecipe
+    >>> from zc.zkzeoserver import ZKDemoStorageRecipe
     >>> _ = ZKDemoStorageRecipe(Buildout(), 'databases,main.0', {})
     [deployment]
     name = databases,main
@@ -185,7 +185,7 @@ The recipe generates a demo-storage configuration::
     recipe = zc.zodbrecipes:server
     shell-script = true
     zdaemon.conf = <runner>
-        start-test-program /opt/zkdeploydemostorage/bin/monitorcheck ${deployment:run-directory}/monitor.sock /databases/main/providers
+        start-test-program /opt/zkzeoserver/bin/monitorcheck ${deployment:run-directory}/monitor.sock /databases/main/providers
       </runner>
     zeo.conf = <zeo>
         address :0
@@ -272,7 +272,7 @@ provide an alternate ZooKeeper server for the base storage::
     recipe = zc.zodbrecipes:server
     shell-script = true
     zdaemon.conf = <runner>
-        start-test-program /opt/zkdeploydemostorage/bin/monitorcheck ${deployment:run-directory}/monitor.sock /databases/main/providers
+        start-test-program /opt/zkzeoserver/bin/monitorcheck ${deployment:run-directory}/monitor.sock /databases/main/providers
       </runner>
     zeo.conf = <zeo>
         address :0

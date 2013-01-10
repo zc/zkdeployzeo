@@ -1,19 +1,17 @@
-****************************
+============================
 ZEO server deployment recipe
-****************************
+============================
 
-Changes
-*******
-
-0.2 (unreleased)
-================
-
-- Added recipe for simple filestorage ZEO servers.
-
-- Cleaned up whitespace in generated configurations.
+This package provides for the deployment of simple ZEO servers
+constructed using filestorages and demostorages.  Extension to support
+additional types of storages should be easy.
 
 
-0.1 (2012-09-07)
-================
+Release history
+===============
 
-Initial release
+
+1.0.0 (unreleased)
+------------------
+
+Initial release.
