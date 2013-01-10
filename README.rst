@@ -5,7 +5,15 @@ Demo storage recipe for deploying demo storages via ZooKeeper
 Changes
 *******
 
-0.1 (2012-09007)
+0.2 (unreleased)
+================
+
+- Added recipe for simple filestorage ZEO servers.
+
+- Cleaned up whitespace in generated configurations.
+
+
+0.1 (2012-09-07)
 ================
 
 Initial release

@@ -24,6 +24,8 @@ extras_require = dict(test=['zope.testing', 'manuel'])
 entry_points = """
 [zc.buildout]
 default = zc.zkdeploydemostorage:ZKDemoStorageRecipe
+demostorage = zc.zkdeploydemostorage:ZKDemoStorageRecipe
+filestorage = zc.zkdeploydemostorage:ZKDemoStorageRecipe
 """
 
 setup(

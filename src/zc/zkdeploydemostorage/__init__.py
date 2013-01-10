@@ -24,7 +24,8 @@ class ZKBaseRecipe(zc.metarecipe.Recipe):
         self.path = '/' + self.base_name.replace(',', '/')
         self.zk = zc.zk.ZK('zookeeper:2181')
         self.zk_options = self.zk.properties(self.path)
-        self.data_dir = '/home/databases' + self.path + '/'
+        self.data_dir = '/home/databases' + self.path
+        self.blobs = self.zk_options.get('blobs', True)
 
         self[self.base_name + '-storage'] = dict(
             recipe='zc.zodbrecipes:server',
@@ -51,6 +52,26 @@ class ZKBaseRecipe(zc.metarecipe.Recipe):
             )
 
 
+class ZKFileStorageRecipe(ZKBaseRecipe):
+
+    def storage(self):
+        zk_options = self.zk_options
+
+        self[self.base_name + 'data-directory'] = dict(
+            recipe='z3c.recipe.mkdir',
+            paths=self.data_dir,
+            user=self.user,
+            group=self.user,
+            **{'remove-on-update': 'true'})
+
+        return zeo_conf_filestorage % dict(
+            ddir=self.data_dir,
+            zblob=(
+                'blob-dir %s/blobs' % self.data_dir
+                if self.blobs else ''),
+            )
+
+
 class ZKDemoStorageRecipe(ZKBaseRecipe):
 
     def storage(self):
@@ -59,7 +80,6 @@ class ZKDemoStorageRecipe(ZKBaseRecipe):
         before = zk_options['before']
         source_path = zk_options['path']
         source_zookeeoper = zk_options.get('zookeeper', 'zookeeper:2181')
-        blobs = zk_options.get('blobs', True)
 
         ddir = os.path.join(self.data_dir, before)
 
@@ -77,69 +97,78 @@ class ZKDemoStorageRecipe(ZKBaseRecipe):
             source_path=source_path,
             zblob=(
                 'blob-dir %s/before.blobs\n'
-                'blob-cache-size 100MB' % ddir
-                if blobs else ''),
+                '      blob-cache-size 100MB' % ddir
+                if self.blobs else ''),
             cblob=(
                 'blob-dir %s/changes.blobs' % ddir
-                if blobs else ''),
+                if self.blobs else ''),
             )
 
 
 zeo_conf = """
-   <zeo>
-      address :0
-      invalidation-queue-size 10000
-      invalidation-age 7200
-      transaction-timeout 300
-   </zeo>
-   <zookeeper>
-     connection zookeeper:2181
-     path %(path)s/providers
-     monitor-server ${deployment:run-directory}/monitor.sock
-   </zookeeper>
+<zeo>
+  address :0
+  invalidation-queue-size 10000
+  invalidation-age 7200
+  transaction-timeout 300
+</zeo>
+<zookeeper>
+  connection zookeeper:2181
+  path %(path)s/providers
+  monitor-server ${deployment:run-directory}/monitor.sock
+</zookeeper>
 
-   %%import zc.zlibstorage
+%%import zc.zlibstorage
 %(storage)s
-   %%import zc.monitorlogstats
-   <eventlog>
-       level INFO
-       <counter>
-          format %%(name)s %%(message)s
-       </counter>
-       <logfile>
-          path STDOUT
-       </logfile>
-   </eventlog>
+%%import zc.monitorlogstats
+<eventlog>
+  level INFO
+  <counter>
+    format %%(name)s %%(message)s
+  </counter>
+  <logfile>
+    path STDOUT
+  </logfile>
+</eventlog>
 """
 
 zeo_conf_demostorage = """\
-   %%import zc.beforestorage
+%%import zc.beforestorage
 
-   <demostorage>
-     <before base>
-        before %(before)s
+<demostorage>
+  <before base>
+    before %(before)s
 
-        <zkzeoclient>
-           zookeeper %(zookeeper)s
-           client before
-           cache_size 100MB
-           var %(ddir)s
-           server %(source_path)s
-           %(zblob)s
-        </zkzeoclient>
-     </before>
+    <zkzeoclient>
+      zookeeper %(zookeeper)s
+      client before
+      cache_size 100MB
+      var %(ddir)s
+      server %(source_path)s
+      %(zblob)s
+    </zkzeoclient>
+  </before>
 
-     <zlibstorage changes>
-       <filestorage>
-         path %(ddir)s/changes.fs
-         %(cblob)s
-       </filestorage>
-     </zlibstorage>
-   </demostorage>
+  <zlibstorage changes>
+    <filestorage>
+      path %(ddir)s/changes.fs
+      %(cblob)s
+    </filestorage>
+  </zlibstorage>
+</demostorage>
+"""
+
+zeo_conf_filestorage = """\
+<zlibstorage>
+  <filestorage>
+    path %(ddir)s/Data.fs
+    %(zblob)s
+  </filestorage>
+</zlibstorage>
 """
 
 zdaemon_conf = """
-   <runner>
-     start-test-program /opt/zkdeploydemostorage/bin/monitorcheck %s %s/providers
-   </runner>
+<runner>
+  start-test-program /opt/zkdeploydemostorage/bin/monitorcheck %s %s/providers
+</runner>
 """
