@@ -169,6 +169,6 @@ zeo_conf_filestorage = """\
 
 zdaemon_conf = """
 <runner>
-  start-test-program /opt/zkzeoserver/bin/monitorcheck %s %s/providers
+  start-test-program /opt/zkdeployzeo/bin/monitorcheck %s %s/providers
 </runner>
 """

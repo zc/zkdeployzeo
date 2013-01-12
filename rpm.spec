@@ -1,4 +1,4 @@
-Name: zkzeoserver
+Name: zkdeployzeo
 Version: 0
 Release: 1
 

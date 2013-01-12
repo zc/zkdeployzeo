@@ -15,7 +15,7 @@
 import os
 import setuptools
 
-name = 'zc.zkzeoserver'
+name = 'zc.zkdeployzeo'
 version = '0'
 description = """
 """
@@ -25,9 +25,9 @@ extras_require = dict(test=['zope.testing', 'manuel'])
 
 entry_points = """
 [zc.buildout]
-default = zc.zkzeoserver:ZKFileStorageRecipe
-demostorage = zc.zkzeoserver:ZKDemoStorageRecipe
-filestorage = zc.zkzeoserver:ZKDemoStorageRecipe
+default = zc.zkdeployzeo:ZKFileStorageRecipe
+demostorage = zc.zkdeployzeo:ZKDemoStorageRecipe
+filestorage = zc.zkdeployzeo:ZKDemoStorageRecipe
 """
 
 setuptools.setup(
