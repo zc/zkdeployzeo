@@ -12,7 +12,7 @@ BuildRequires: cleanpython26
 ##########################################################################
 # Lines below this point normally shouldn't change
 
-%define source %{name}-%{version}
+%define source zcdeployzeo-%{version}
 
 Vendor: Zope Corporation
 Packager: Zope Corporation <sales@zope.com>
