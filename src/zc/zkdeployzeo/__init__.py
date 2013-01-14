@@ -11,9 +11,9 @@ class ZKBaseRecipe(zc.metarecipe.Recipe):
         super(ZKBaseRecipe, self).__init__(buildout, name, options)
 
         assert name.endswith('.0'), name # There can be only one.
-        self.base_name = name[:-2]
+        self.base_name = str(name[:-2])
 
-        self.user = options.get('user', 'zope')
+        self.user = str(options.get('user', 'zope'))
 
         self['deployment'] = dict(
             recipe='zc.recipe.deployment',
@@ -57,7 +57,7 @@ class ZKFileStorageRecipe(ZKBaseRecipe):
     def storage(self):
         zk_options = self.zk_options
 
-        self[self.base_name + 'data-directory'] = dict(
+        self[self.base_name + '-data-directory'] = dict(
             recipe='z3c.recipe.mkdir',
             paths=self.data_dir,
             user=self.user,
@@ -77,13 +77,13 @@ class ZKDemoStorageRecipe(ZKBaseRecipe):
     def storage(self):
         zk_options = self.zk_options
 
-        before = zk_options['before']
-        source_path = zk_options['path']
+        before = str(zk_options['before'])
+        source_path = str(zk_options['path'])
         source_zookeeoper = zk_options.get('zookeeper', 'zookeeper:2181')
 
         ddir = os.path.join(self.data_dir, before)
 
-        self[self.base_name + 'data-directory'] = dict(
+        self[self.base_name + '-data-directory'] = dict(
             recipe='z3c.recipe.mkdir',
             paths=ddir,
             user=self.user,
@@ -169,6 +169,6 @@ zeo_conf_filestorage = """\
 
 zdaemon_conf = """
 <runner>
-  start-test-program /opt/zkdeployzeo/bin/monitorcheck %s %s/providers
+  start-test-program ${buildout:directory}/bin/monitorcheck %s %s/providers
 </runner>
 """

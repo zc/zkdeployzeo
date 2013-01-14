@@ -30,7 +30,7 @@ The recipe generates a file-storage configuration with blobs enabled::
     name = databases,main
     recipe = zc.recipe.deployment
     user = zope
-    [databases,maindata-directory]
+    [databases,main-data-directory]
     group = zope
     paths = /home/databases/databases/main
     recipe = z3c.recipe.mkdir
@@ -41,7 +41,7 @@ The recipe generates a file-storage configuration with blobs enabled::
     recipe = zc.zodbrecipes:server
     shell-script = true
     zdaemon.conf = <runner>
-        start-test-program /opt/zkdeployzeo/bin/monitorcheck ${deployment:run-directory}/monitor.sock /databases/main/providers
+        start-test-program ${buildout:directory}/bin/monitorcheck ${deployment:run-directory}/monitor.sock /databases/main/providers
       </runner>
     zeo.conf = <zeo>
         address :0
@@ -98,7 +98,7 @@ The generated zeo.conf no longer includes the blob settings::
     name = databases,main
     recipe = zc.recipe.deployment
     user = zope
-    [databases,maindata-directory]
+    [databases,main-data-directory]
     group = zope
     paths = /home/databases/databases/main
     recipe = z3c.recipe.mkdir
@@ -109,7 +109,7 @@ The generated zeo.conf no longer includes the blob settings::
     recipe = zc.zodbrecipes:server
     shell-script = true
     zdaemon.conf = <runner>
-        start-test-program /opt/zkdeployzeo/bin/monitorcheck ${deployment:run-directory}/monitor.sock /databases/main/providers
+        start-test-program ${buildout:directory}/bin/monitorcheck ${deployment:run-directory}/monitor.sock /databases/main/providers
       </runner>
     zeo.conf = <zeo>
         address :0
@@ -174,7 +174,7 @@ The recipe generates a demo-storage configuration::
     name = databases,main
     recipe = zc.recipe.deployment
     user = zope
-    [databases,maindata-directory]
+    [databases,main-data-directory]
     group = zope
     paths = /home/databases/databases/main/2012-08-22
     recipe = z3c.recipe.mkdir
@@ -185,7 +185,7 @@ The recipe generates a demo-storage configuration::
     recipe = zc.zodbrecipes:server
     shell-script = true
     zdaemon.conf = <runner>
-        start-test-program /opt/zkdeployzeo/bin/monitorcheck ${deployment:run-directory}/monitor.sock /databases/main/providers
+        start-test-program ${buildout:directory}/bin/monitorcheck ${deployment:run-directory}/monitor.sock /databases/main/providers
       </runner>
     zeo.conf = <zeo>
         address :0
@@ -261,7 +261,7 @@ provide an alternate ZooKeeper server for the base storage::
     name = databases,main
     recipe = zc.recipe.deployment
     user = zope
-    [databases,maindata-directory]
+    [databases,main-data-directory]
     group = zope
     paths = /home/databases/databases/main/2012-08-22
     recipe = z3c.recipe.mkdir
@@ -272,7 +272,7 @@ provide an alternate ZooKeeper server for the base storage::
     recipe = zc.zodbrecipes:server
     shell-script = true
     zdaemon.conf = <runner>
-        start-test-program /opt/zkdeployzeo/bin/monitorcheck ${deployment:run-directory}/monitor.sock /databases/main/providers
+        start-test-program ${buildout:directory}/bin/monitorcheck ${deployment:run-directory}/monitor.sock /databases/main/providers
       </runner>
     zeo.conf = <zeo>
         address :0
