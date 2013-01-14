@@ -24,7 +24,7 @@ class ZKBaseRecipe(zc.metarecipe.Recipe):
         self.path = '/' + self.base_name.replace(',', '/')
         self.zk = zc.zk.ZK('zookeeper:2181')
         self.zk_options = self.zk.properties(self.path)
-        self.data_dir = '/home/databases' + self.path
+        self.data_dir = '/home/databases' + str(self.path)
         self.blobs = self.zk_options.get('blobs', True)
 
         self[self.base_name + '-storage'] = dict(
@@ -67,7 +67,7 @@ class ZKFileStorageRecipe(ZKBaseRecipe):
         return zeo_conf_filestorage % dict(
             ddir=self.data_dir,
             zblob=(
-                'blob-dir %s/blobs' % self.data_dir
+                'blob-dir %s/blobs' % str(self.data_dir)
                 if self.blobs else ''),
             )
 
