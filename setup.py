@@ -27,7 +27,7 @@ entry_points = """
 [zc.buildout]
 default = zc.zkdeployzeo:ZKFileStorageRecipe
 demostorage = zc.zkdeployzeo:ZKDemoStorageRecipe
-filestorage = zc.zkdeployzeo:ZKDemoStorageRecipe
+filestorage = zc.zkdeployzeo:ZKFileStorageRecipe
 """
 
 setuptools.setup(
