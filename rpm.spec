@@ -1,4 +1,4 @@
-Name: zkdeployzeo
+Name: zeo
 Version: 0
 Release: 1
 
