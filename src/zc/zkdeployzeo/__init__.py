@@ -8,6 +8,7 @@ import zc.zk
 class ZKBaseRecipe(zc.metarecipe.Recipe):
 
     def __init__(self, buildout, name, options):
+        #import pdb; pdb.set_trace()
         super(ZKBaseRecipe, self).__init__(buildout, name, options)
 
         assert name.endswith('.0'), name # There can be only one.
@@ -36,10 +37,10 @@ class ZKBaseRecipe(zc.metarecipe.Recipe):
                     path=self.path,
                     ),
                 'shell-script': 'true',
-                'zdaemon.conf': zdaemon_conf % (
-                    '${deployment:run-directory}/monitor.sock',
-                    self.path),
+                'zdaemon.conf': zdaemon_conf % self.path,
                 })
+        #print >>open("/tmp/zeo-%s-%s.conf" % (os.getpid(), name), "w"), \
+        #      self.buildout[self.base_name + '-storage']['zeo.conf']
 
         self['rc'] = dict(
             recipe='zc.recipe.rhrc',
@@ -169,6 +170,6 @@ zeo_conf_filestorage = """\
 
 zdaemon_conf = """
 <runner>
-  start-test-program ${buildout:directory}/bin/monitorcheck %s %s/providers
+  start-test-program ${buildout:bin-directory}/monitorcheck ${deployment:run-directory}/monitor.sock %s/providers
 </runner>
 """
