@@ -32,15 +32,13 @@ class ZKBaseRecipe(zc.metarecipe.Recipe):
             recipe='zc.zodbrecipes:server',
             deployment='deployment',
             **{
-                'zeo.conf': zeo_conf % dict(
+                'zeo.conf': str(zeo_conf % dict(
                     storage=self.storage(),
                     path=self.path,
-                    ),
+                    )),
                 'shell-script': 'true',
                 'zdaemon.conf': zdaemon_conf % self.path,
                 })
-        #print >>open("/tmp/zeo-%s-%s.conf" % (os.getpid(), name), "w"), \
-        #      self.buildout[self.base_name + '-storage']['zeo.conf']
 
         self['rc'] = dict(
             recipe='zc.recipe.rhrc',
@@ -135,6 +133,7 @@ zeo_conf = """
 
 zeo_conf_demostorage = """\
 %%import zc.beforestorage
+%%import zc.zkzeo
 
 <demostorage>
   <before base>
@@ -143,7 +142,7 @@ zeo_conf_demostorage = """\
     <zkzeoclient>
       zookeeper %(zookeeper)s
       client before
-      cache_size 100MB
+      cache-size 100MB
       var %(ddir)s
       server %(source_path)s
       %(zblob)s
