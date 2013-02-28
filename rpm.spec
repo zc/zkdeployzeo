@@ -1,5 +1,5 @@
 Name: zeo
-Version: 1.0.1
+Version: 0
 Release: 1
 
 Summary: ZEO server configured using zkdeployment
