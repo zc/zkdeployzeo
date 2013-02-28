@@ -12,6 +12,13 @@ The bundled RPM specificatiion creates a **zeo** RPM.
 Release history
 ===============
 
+1.0.2 (2013-02-28)
+------------------
+
+- Fix permissions issue in generated RPMs.
+- Move to buildout 2.
+
+
 1.0.1 (2013-02-28)
 ------------------
 
