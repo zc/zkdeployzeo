@@ -211,6 +211,8 @@ The recipe generates a demo-storage configuration::
             zookeeper zookeeper:2181
             client before
             cache-size 100MB
+            read-only true
+            read-only-fallback true
             var /home/databases/databases/main/2012-08-22
             server /some/path
             blob-dir /home/databases/databases/main/2012-08-22/before.blobs
@@ -299,6 +301,8 @@ provide an alternate ZooKeeper server for the base storage::
             zookeeper zookeeper.example.com:2181
             client before
             cache-size 100MB
+            read-only true
+            read-only-fallback true
             var /home/databases/databases/main/2012-08-22
             server /some/path
     <BLANKLINE>

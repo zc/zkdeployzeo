@@ -143,6 +143,8 @@ zeo_conf_demostorage = """\
       zookeeper %(zookeeper)s
       client before
       cache-size 100MB
+      read-only true
+      read-only-fallback true
       var %(ddir)s
       server %(source_path)s
       %(zblob)s
