@@ -16,7 +16,7 @@ import os
 import setuptools
 
 name = 'zc.zkdeployzeo'
-version = '1.0.2'
+version = '0'
 description = """
 """
 
