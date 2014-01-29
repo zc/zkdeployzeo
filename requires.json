@@ -1,0 +1,9 @@
+{
+    "build": [
+        "cleanpython26"
+    ],
+    "run": [
+        "cleanpython26",
+        "zcuser-zope"
+    ]
+}
