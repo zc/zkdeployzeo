@@ -6,11 +6,16 @@ This package provides for the deployment of simple ZEO servers
 constructed using filestorages and demostorages.  Extension to support
 additional types of storages should be easy.
 
-The bundled RPM specificatiion creates a **zeo** RPM.
-
 
 Release history
 ===============
+
+1.1.0 (unreleased)
+------------------
+
+- Move to packagegrinder.
+- Update dependencies.
+
 
 1.0.2 (2013-02-28)
 ------------------
