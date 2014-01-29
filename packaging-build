@@ -5,7 +5,7 @@ python=/opt/cleanpython26/bin/python
 $python bootstrap.py --version 2.1.1 \
         --find-links "$HOME/.buildout/download-cache/dist"
 
-bin/buildout -c source-release.cfg \
+bin/buildout -c rpm.cfg \
              find-links="$HOME/.buildout/download-cache/dist"
 
 $python -m compileall -q -f `pwd`/eggs || true
