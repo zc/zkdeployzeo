@@ -377,7 +377,7 @@ We'll use this as our demostorage configuration:
 
    /databases
      /main : zeo demostorage
-       path = '/some/path'
+       path = '/some/path/providers'
        before = '2014-04-07'
        zookeeper = 'zk.example.com:2181'
 
@@ -430,7 +430,7 @@ We'll use this as our demostorage configuration:
             read-only true
             read-only-fallback true
             var /home/databases/databases/main/2014-04-07
-            server /some/path
+            server /some/path/providers
             blob-dir /home/databases/databases/main/2014-04-07/before.blobs
             blob-cache-size 100MB
           </zks3blobclient>
@@ -457,7 +457,7 @@ We'll use this as our demostorage configuration:
     [rc]
     chkconfig = 345 99 10
     deployment = deployment
-    digest = 8748dde6eb3831e1cea356878700ed31fc69f546
+    digest = 79d6f08a1630fdb210f7922eca17c84867cf5f7a
     parts = databases,main-storage
     process-management = true
     recipe = zc.recipe.rhrc
@@ -469,7 +469,7 @@ reported:
    /databases
      /main : zeo demostorage
        blobs = False
-       path = '/some/path'
+       path = '/some/path/providers'
        before = '2014-04-07'
        zookeeper = 'zk.example.com:2181'
 

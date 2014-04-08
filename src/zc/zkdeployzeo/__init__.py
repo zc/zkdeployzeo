@@ -89,7 +89,8 @@ class ZKDemoStorageRecipe(ZKBaseRecipe):
             **{'remove-on-update': 'true'})
 
         base_zk = zc.zk.ZK(source_zookeeoper)
-        base_options = base_zk.properties(source_path)
+        base_path = source_path.rsplit("/", 1)[0]
+        base_options = base_zk.properties(base_path)
         s3 = base_options.get("s3")
 
         base_storage_kind = "zkzeoclient"
