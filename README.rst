@@ -13,8 +13,9 @@ Release history
 1.1.0 (unreleased)
 ------------------
 
+- Demostorage: Support base storages using the S3 blob server.
 - Move to packagegrinder.
-- Update dependencies.
+- Update dependencies (use kazoo instead of zc-zookeeper-static).
 
 
 1.0.2 (2013-02-28)
