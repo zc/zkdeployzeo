@@ -54,8 +54,6 @@ class ZKBaseRecipe(zc.metarecipe.Recipe):
 class ZKFileStorageRecipe(ZKBaseRecipe):
 
     def storage(self):
-        zk_options = self.zk_options
-
         self[self.base_name + '-data-directory'] = dict(
             recipe='z3c.recipe.mkdir',
             paths=self.data_dir,
@@ -89,8 +87,17 @@ class ZKDemoStorageRecipe(ZKBaseRecipe):
             group=self.user,
             **{'remove-on-update': 'true'})
 
-        return zeo_conf_demostorage % dict(
+        #base_zk = zc.zk.ZK(source_zookeeoper)
+        #base_options = base_zk.properties(source_path)
+        #s3 = base_options.get("s3")
+        s3 = False
+
+        base_storage_kind = "zkzeoclient"
+        if s3:
+            base_storage_kind = "zks3blobclient"
+        config = zeo_conf_demostorage % dict(
             ddir=ddir,
+            base_storage_kind=base_storage_kind,
             before=before,
             zookeeper=source_zookeeoper,
             source_path=source_path,
@@ -102,6 +109,9 @@ class ZKDemoStorageRecipe(ZKBaseRecipe):
                 'blob-dir %s/changes.blobs' % ddir
                 if self.blobs else ''),
             )
+        if s3:
+            config = "%import zc.s3blobstorage\n" + config
+        return config
 
 
 zeo_conf = """
@@ -139,16 +149,16 @@ zeo_conf_demostorage = """\
   <before base>
     before %(before)s
 
-    <zkzeoclient>
-      zookeeper %(zookeeper)s
-      client before
+    <%(base_storage_kind)s>
+      %(zblob)s
       cache-size 100MB
+      client before
       read-only true
       read-only-fallback true
-      var %(ddir)s
       server %(source_path)s
-      %(zblob)s
-    </zkzeoclient>
+      var %(ddir)s
+      zookeeper %(zookeeper)s
+    </%(base_storage_kind)s>
   </before>
 
   <zlibstorage changes>

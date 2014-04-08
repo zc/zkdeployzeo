@@ -16,7 +16,7 @@ Basic file storages
 Create a basic file storage using a ZooKeeper node like this::
 
    /databases
-     /main : demostorage
+     /main : zeo
 
 .. -> tree
 
@@ -84,7 +84,7 @@ The recipe generates a file-storage configuration with blobs enabled::
 Blobs can be disabled using a property on the node::
 
    /databases
-     /main : demostorage
+     /main : zeo
        blobs = False
 
 .. -> tree
@@ -153,12 +153,25 @@ The generated zeo.conf no longer includes the blob settings::
 Staging using demo storages
 ---------------------------
 
+We'd like to set up a demo storage aronud this production storage when
+creating a stage:
+
+   /some
+     /path : zeo
+       /providers
+
+.. -> production_tree
+
+    >>> production_zk = zc.zk.ZK('zookeeper.example.com:2181')
+    >>> production_zk.import_tree(production_tree, trim=True)
+
 To set up a demo storage, create a ZooKeeper node::
 
    /databases
-     /main : demostorage
+     /main : zeo demostorage
        path = '/some/path'
        before = '2012-08-22'
+       zookeeper = 'zookeeper.example.com:2181'
 
 .. -> tree
 
@@ -208,7 +221,7 @@ The recipe generates a demo-storage configuration::
           before 2012-08-22
     <BLANKLINE>
           <zkzeoclient>
-            zookeeper zookeeper:2181
+            zookeeper zookeeper.example.com:2181
             client before
             cache-size 100MB
             read-only true
@@ -250,7 +263,7 @@ By default, blobs are assumed.  You can override that.  You can also
 provide an alternate ZooKeeper server for the base storage::
 
    /databases
-     /main : demostorage
+     /main : zeo demostorage
        path = '/some/path'
        before = '2012-08-22'
        blobs = False
@@ -307,6 +320,119 @@ provide an alternate ZooKeeper server for the base storage::
             server /some/path
     <BLANKLINE>
           </zkzeoclient>
+        </before>
+    <BLANKLINE>
+        <zlibstorage changes>
+          <filestorage>
+            path /home/databases/databases/main/2012-08-22/changes.fs
+    <BLANKLINE>
+          </filestorage>
+        </zlibstorage>
+      </demostorage>
+    <BLANKLINE>
+      %import zc.monitorlogstats
+      <eventlog>
+        level INFO
+        <counter>
+          format %(name)s %(message)s
+        </counter>
+        <logfile>
+          path STDOUT
+        </logfile>
+      </eventlog>
+    [rc]
+    chkconfig = 345 99 10
+    deployment = deployment
+    digest = 7f61b2fdd416d5bb4451f8d9e434a398812bcda6
+    parts = databases,main-storage
+    process-management = true
+    recipe = zc.recipe.rhrc
+
+
+Demo storages involving the S3 blob server
+------------------------------------------
+
+
+    >>> zk1 = zc.zk.ZK("zookeeper:2181")
+    >>> zk2 = zc.zk.ZK("zookeeper.example.com:2181")
+
+    >>> import pdb; pdb.set_trace()
+
+
+When the external storage being demoed uses the S3 blob server, the base
+storage needs to include the S3 blob client.  Let's use this as the
+outer definition:
+
+   /some
+     /path : zeo
+       s3 = "blob.zope.com/cust/main:0:8888"
+       /providers
+
+.. -> production_tree
+
+    >>> production_zk = zc.zk.ZK('zookeeper.example.com:2181')
+    >>> production_zk.import_tree(production_tree, trim=True)
+
+We'll use this as our demostorage configuration:
+
+   /databases
+     /main : zeo demostorage
+       path = '/some/path'
+       before = '2014-04-07'
+       blobs = False
+       zookeeper = 'zookeeper.example.com:2181'
+
+.. -> tree
+
+    >>> zk.import_tree(tree)
+    >>> _ = ZKDemoStorageRecipe(Buildout(), 'databases,main.0', {})
+    [deployment]
+    name = databases,main
+    recipe = zc.recipe.deployment
+    user = zope
+    [databases,main-data-directory]
+    group = zope
+    paths = /home/databases/databases/main/2012-08-22
+    recipe = z3c.recipe.mkdir
+    remove-on-update = true
+    user = zope
+    [databases,main-storage]
+    deployment = deployment
+    recipe = zc.zodbrecipes:server
+    shell-script = true
+    zdaemon.conf = <runner>
+        start-test-program ${buildout:bin-directory}/monitorcheck ${deployment:run-directory}/monitor.sock /databases/main/providers
+      </runner>
+    zeo.conf = <zeo>
+        address :0
+        invalidation-queue-size 10000
+        invalidation-age 7200
+        transaction-timeout 300
+      </zeo>
+      <zookeeper>
+        connection zookeeper:2181
+        path /databases/main/providers
+        monitor-server ${deployment:run-directory}/monitor.sock
+      </zookeeper>
+    <BLANKLINE>
+      %import zc.zlibstorage
+      %import zc.beforestorage
+      %import zc.zkzeo
+    <BLANKLINE>
+      <demostorage>
+        <before base>
+          before 2012-08-22
+    <BLANKLINE>
+          <zks3blobclient>
+            zookeeper zookeeper.example.com:2181
+            cache-size 100MB
+            client before
+            read-only true
+            read-only-fallback true
+            server /some/path
+            var /home/databases/databases/main/2012-08-22
+    <BLANKLINE>
+          </zks3blobclient>
         </before>
     <BLANKLINE>
         <zlibstorage changes>
