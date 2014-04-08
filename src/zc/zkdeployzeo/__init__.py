@@ -1,6 +1,7 @@
 import hashlib
 import os
 import pwd
+import zc.buildout
 import zc.metarecipe
 import zc.zk
 
@@ -27,6 +28,7 @@ class ZKBaseRecipe(zc.metarecipe.Recipe):
         self.zk_options = self.zk.properties(self.path)
         self.data_dir = '/home/databases' + str(self.path)
         self.blobs = self.zk_options.get('blobs', True)
+        self.digestible = sorted(self.zk_options.items())
 
         self[self.base_name + '-storage'] = dict(
             recipe='zc.zodbrecipes:server',
@@ -45,8 +47,7 @@ class ZKBaseRecipe(zc.metarecipe.Recipe):
             deployment='deployment',
             parts=self.base_name + '-storage',
             chkconfig='345 99 10',
-            digest=hashlib.sha1(
-                repr(sorted(self.zk_options.items()))).hexdigest(),
+            digest=hashlib.sha1(repr(self.digestible)).hexdigest(),
             **{'process-management': 'true'}
             )
 
@@ -87,14 +88,18 @@ class ZKDemoStorageRecipe(ZKBaseRecipe):
             group=self.user,
             **{'remove-on-update': 'true'})
 
-        #base_zk = zc.zk.ZK(source_zookeeoper)
-        #base_options = base_zk.properties(source_path)
-        #s3 = base_options.get("s3")
-        s3 = False
+        base_zk = zc.zk.ZK(source_zookeeoper)
+        base_options = base_zk.properties(source_path)
+        s3 = base_options.get("s3")
 
         base_storage_kind = "zkzeoclient"
         if s3:
+            if not self.blobs:
+                raise zc.buildout.UserError(
+                    "demostorage cannot be configured without blobs"
+                    " when a blob server is used in the base storage")
             base_storage_kind = "zks3blobclient"
+            self.digestible = (self.digestible, True)
         config = zeo_conf_demostorage % dict(
             ddir=ddir,
             base_storage_kind=base_storage_kind,
@@ -150,14 +155,14 @@ zeo_conf_demostorage = """\
     before %(before)s
 
     <%(base_storage_kind)s>
-      %(zblob)s
-      cache-size 100MB
+      zookeeper %(zookeeper)s
       client before
+      cache-size 100MB
       read-only true
       read-only-fallback true
-      server %(source_path)s
       var %(ddir)s
-      zookeeper %(zookeeper)s
+      server %(source_path)s
+      %(zblob)s
     </%(base_storage_kind)s>
   </before>
 

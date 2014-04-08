@@ -76,7 +76,7 @@ The recipe generates a file-storage configuration with blobs enabled::
     [rc]
     chkconfig = 345 99 10
     deployment = deployment
-    digest = af2c2a295429689dcecd9675b3c7c9a58380614e
+    digest = e4e5797cfbeb7a964dfb92cbd2cf03c5137e426d
     parts = databases,main-storage
     process-management = true
     recipe = zc.recipe.rhrc
@@ -144,7 +144,7 @@ The generated zeo.conf no longer includes the blob settings::
     [rc]
     chkconfig = 345 99 10
     deployment = deployment
-    digest = 9762af567a903a2cc4cea6b10dec3d3fec6b6e7e
+    digest = 6901ffea26baed493747bbac7fefa4bd0026f4db
     parts = databases,main-storage
     process-management = true
     recipe = zc.recipe.rhrc
@@ -162,7 +162,7 @@ creating a stage:
 
 .. -> production_tree
 
-    >>> production_zk = zc.zk.ZK('zookeeper.example.com:2181')
+    >>> production_zk = zc.zk.ZK('zk.example.com:2181')
     >>> production_zk.import_tree(production_tree, trim=True)
 
 To set up a demo storage, create a ZooKeeper node::
@@ -171,7 +171,7 @@ To set up a demo storage, create a ZooKeeper node::
      /main : zeo demostorage
        path = '/some/path'
        before = '2012-08-22'
-       zookeeper = 'zookeeper.example.com:2181'
+       zookeeper = 'zk.example.com:2181'
 
 .. -> tree
 
@@ -221,7 +221,7 @@ The recipe generates a demo-storage configuration::
           before 2012-08-22
     <BLANKLINE>
           <zkzeoclient>
-            zookeeper zookeeper.example.com:2181
+            zookeeper zk.example.com:2181
             client before
             cache-size 100MB
             read-only true
@@ -254,7 +254,7 @@ The recipe generates a demo-storage configuration::
     [rc]
     chkconfig = 345 99 10
     deployment = deployment
-    digest = 6b1ec88ff4a849914570c1de1a536a42eb85eda1
+    digest = d03a753d584dcc120579d176eabf66933122aa76
     parts = databases,main-storage
     process-management = true
     recipe = zc.recipe.rhrc
@@ -267,7 +267,7 @@ provide an alternate ZooKeeper server for the base storage::
        path = '/some/path'
        before = '2012-08-22'
        blobs = False
-       zookeeper = 'zookeeper.example.com:2181'
+       zookeeper = 'zk.example.com:2181'
 
 .. -> tree
 
@@ -311,7 +311,7 @@ provide an alternate ZooKeeper server for the base storage::
           before 2012-08-22
     <BLANKLINE>
           <zkzeoclient>
-            zookeeper zookeeper.example.com:2181
+            zookeeper zk.example.com:2181
             client before
             cache-size 100MB
             read-only true
@@ -343,7 +343,7 @@ provide an alternate ZooKeeper server for the base storage::
     [rc]
     chkconfig = 345 99 10
     deployment = deployment
-    digest = 7f61b2fdd416d5bb4451f8d9e434a398812bcda6
+    digest = 7ddc6c21208dd86623541c2783ff9714912edf8c
     parts = databases,main-storage
     process-management = true
     recipe = zc.recipe.rhrc
@@ -354,9 +354,9 @@ Demo storages involving the S3 blob server
 
 
     >>> zk1 = zc.zk.ZK("zookeeper:2181")
-    >>> zk2 = zc.zk.ZK("zookeeper.example.com:2181")
+    >>> zk2 = zc.zk.ZK("zk.example.com:2181")
 
-    >>> import pdb; pdb.set_trace()
+#    >>> import pdb; pdb.set_trace()
 
 
 When the external storage being demoed uses the S3 blob server, the base
@@ -370,7 +370,7 @@ outer definition:
 
 .. -> production_tree
 
-    >>> production_zk = zc.zk.ZK('zookeeper.example.com:2181')
+    >>> production_zk = zc.zk.ZK('zk.example.com:2181')
     >>> production_zk.import_tree(production_tree, trim=True)
 
 We'll use this as our demostorage configuration:
@@ -379,8 +379,7 @@ We'll use this as our demostorage configuration:
      /main : zeo demostorage
        path = '/some/path'
        before = '2014-04-07'
-       blobs = False
-       zookeeper = 'zookeeper.example.com:2181'
+       zookeeper = 'zk.example.com:2181'
 
 .. -> tree
 
@@ -392,7 +391,7 @@ We'll use this as our demostorage configuration:
     user = zope
     [databases,main-data-directory]
     group = zope
-    paths = /home/databases/databases/main/2012-08-22
+    paths = /home/databases/databases/main/2014-04-07
     recipe = z3c.recipe.mkdir
     remove-on-update = true
     user = zope
@@ -416,29 +415,31 @@ We'll use this as our demostorage configuration:
       </zookeeper>
     <BLANKLINE>
       %import zc.zlibstorage
+      %import zc.s3blobstorage
       %import zc.beforestorage
       %import zc.zkzeo
     <BLANKLINE>
       <demostorage>
         <before base>
-          before 2012-08-22
+          before 2014-04-07
     <BLANKLINE>
           <zks3blobclient>
-            zookeeper zookeeper.example.com:2181
-            cache-size 100MB
+            zookeeper zk.example.com:2181
             client before
+            cache-size 100MB
             read-only true
             read-only-fallback true
+            var /home/databases/databases/main/2014-04-07
             server /some/path
-            var /home/databases/databases/main/2012-08-22
-    <BLANKLINE>
+            blob-dir /home/databases/databases/main/2014-04-07/before.blobs
+            blob-cache-size 100MB
           </zks3blobclient>
         </before>
     <BLANKLINE>
         <zlibstorage changes>
           <filestorage>
-            path /home/databases/databases/main/2012-08-22/changes.fs
-    <BLANKLINE>
+            path /home/databases/databases/main/2014-04-07/changes.fs
+            blob-dir /home/databases/databases/main/2014-04-07/changes.blobs
           </filestorage>
         </zlibstorage>
       </demostorage>
@@ -456,7 +457,25 @@ We'll use this as our demostorage configuration:
     [rc]
     chkconfig = 345 99 10
     deployment = deployment
-    digest = 7f61b2fdd416d5bb4451f8d9e434a398812bcda6
+    digest = 8748dde6eb3831e1cea356878700ed31fc69f546
     parts = databases,main-storage
     process-management = true
     recipe = zc.recipe.rhrc
+
+If our demostorage is configured without blobs while the production
+storage we're using as our base is using a blob server, an error is
+reported:
+
+   /databases
+     /main : zeo demostorage
+       blobs = False
+       path = '/some/path'
+       before = '2014-04-07'
+       zookeeper = 'zk.example.com:2181'
+
+.. -> tree
+
+    >>> zk.import_tree(tree)
+    >>> _ = ZKDemoStorageRecipe(Buildout(), 'databases,main.0', {})
+    Traceback (most recent call last):
+    UserError: demostorage cannot be configured without blobs when a blob server is used in the base storage
