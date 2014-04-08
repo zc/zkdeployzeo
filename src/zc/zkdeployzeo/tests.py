@@ -7,10 +7,6 @@ import zope.testing.setupstack
 
 
 def setUp(test):
-    zc.zk.testing.setUp(test, '', 'zookeeper:2181')
-
-
-def setUp(test):
     fauxs = {}
     def add_faux(addr):
         fauxs[addr] = zc.zk.testing.ZooKeeper(addr, zc.zk.testing.Node())
