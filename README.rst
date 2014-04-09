@@ -10,7 +10,7 @@ additional types of storages should be easy.
 Release history
 ===============
 
-1.1.0 (unreleased)
+1.1.0 (2014-04-09)
 ------------------
 
 - Demostorage: Support base storages using the S3 blob server.
