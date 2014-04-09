@@ -9,7 +9,6 @@ import zc.zk
 class ZKBaseRecipe(zc.metarecipe.Recipe):
 
     def __init__(self, buildout, name, options):
-        #import pdb; pdb.set_trace()
         super(ZKBaseRecipe, self).__init__(buildout, name, options)
 
         assert name.endswith('.0'), name # There can be only one.
