@@ -153,7 +153,7 @@ The generated zeo.conf no longer includes the blob settings::
 Staging using demo storages
 ---------------------------
 
-We'd like to set up a demo storage aronud this production storage when
+We'd like to set up a demo storage around this production storage when
 creating a stage:
 
    /some
@@ -356,12 +356,9 @@ Demo storages involving the S3 blob server
     >>> zk1 = zc.zk.ZK("zookeeper:2181")
     >>> zk2 = zc.zk.ZK("zk.example.com:2181")
 
-#    >>> import pdb; pdb.set_trace()
-
-
 When the external storage being demoed uses the S3 blob server, the base
 storage needs to include the S3 blob client.  Let's use this as the
-outer definition:
+outer definition::
 
    /some
      /path : zeo
