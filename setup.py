@@ -20,7 +20,12 @@ version = '0'
 description = """
 """
 
-install_requires = ['setuptools', 'zc.metarecipe', 'zc.zk [test]']
+install_requires = [
+    'setuptools',
+    'zc.buildout',
+    'zc.metarecipe',
+    'zc.zk [test]',
+    ]
 extras_require = dict(test=['zope.testing', 'manuel'])
 
 entry_points = """

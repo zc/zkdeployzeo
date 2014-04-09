@@ -1,6 +1,7 @@
 import hashlib
 import os
 import pwd
+import zc.buildout
 import zc.metarecipe
 import zc.zk
 
@@ -8,7 +9,6 @@ import zc.zk
 class ZKBaseRecipe(zc.metarecipe.Recipe):
 
     def __init__(self, buildout, name, options):
-        #import pdb; pdb.set_trace()
         super(ZKBaseRecipe, self).__init__(buildout, name, options)
 
         assert name.endswith('.0'), name # There can be only one.
@@ -27,6 +27,7 @@ class ZKBaseRecipe(zc.metarecipe.Recipe):
         self.zk_options = self.zk.properties(self.path)
         self.data_dir = '/home/databases' + str(self.path)
         self.blobs = self.zk_options.get('blobs', True)
+        self.digestible = sorted(self.zk_options.items())
 
         self[self.base_name + '-storage'] = dict(
             recipe='zc.zodbrecipes:server',
@@ -45,8 +46,7 @@ class ZKBaseRecipe(zc.metarecipe.Recipe):
             deployment='deployment',
             parts=self.base_name + '-storage',
             chkconfig='345 99 10',
-            digest=hashlib.sha1(
-                repr(sorted(self.zk_options.items()))).hexdigest(),
+            digest=hashlib.sha1(repr(self.digestible)).hexdigest(),
             **{'process-management': 'true'}
             )
 
@@ -54,8 +54,6 @@ class ZKBaseRecipe(zc.metarecipe.Recipe):
 class ZKFileStorageRecipe(ZKBaseRecipe):
 
     def storage(self):
-        zk_options = self.zk_options
-
         self[self.base_name + '-data-directory'] = dict(
             recipe='z3c.recipe.mkdir',
             paths=self.data_dir,
@@ -89,8 +87,22 @@ class ZKDemoStorageRecipe(ZKBaseRecipe):
             group=self.user,
             **{'remove-on-update': 'true'})
 
-        return zeo_conf_demostorage % dict(
+        base_zk = zc.zk.ZK(source_zookeeoper)
+        base_path = source_path.rsplit("/", 1)[0]
+        base_options = base_zk.properties(base_path)
+        s3 = base_options.get("s3")
+
+        base_storage_kind = "zkzeoclient"
+        if s3:
+            if not self.blobs:
+                raise zc.buildout.UserError(
+                    "demostorage cannot be configured without blobs"
+                    " when a blob server is used in the base storage")
+            base_storage_kind = "zks3blobclient"
+            self.digestible = (self.digestible, True)
+        config = zeo_conf_demostorage % dict(
             ddir=ddir,
+            base_storage_kind=base_storage_kind,
             before=before,
             zookeeper=source_zookeeoper,
             source_path=source_path,
@@ -102,6 +114,9 @@ class ZKDemoStorageRecipe(ZKBaseRecipe):
                 'blob-dir %s/changes.blobs' % ddir
                 if self.blobs else ''),
             )
+        if s3:
+            config = "%import zc.s3blobstorage\n" + config
+        return config
 
 
 zeo_conf = """
@@ -139,7 +154,7 @@ zeo_conf_demostorage = """\
   <before base>
     before %(before)s
 
-    <zkzeoclient>
+    <%(base_storage_kind)s>
       zookeeper %(zookeeper)s
       client before
       cache-size 100MB
@@ -148,7 +163,7 @@ zeo_conf_demostorage = """\
       var %(ddir)s
       server %(source_path)s
       %(zblob)s
-    </zkzeoclient>
+    </%(base_storage_kind)s>
   </before>
 
   <zlibstorage changes>
