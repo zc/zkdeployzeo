@@ -2,7 +2,7 @@
 
 python=/opt/cleanpython26/bin/python
 
-$python bootstrap.py --version 2.1.1 \
+$python bootstrap.py \
         --find-links "$HOME/.buildout/download-cache/dist"
 
 bin/buildout -c rpm.cfg \

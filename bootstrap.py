@@ -40,7 +40,8 @@ this script from going over the network.
 '''
 
 parser = OptionParser(usage=usage)
-parser.add_option("-v", "--version", help="use a specific zc.buildout version")
+parser.add_option("-v", "--version", help="use a specific zc.buildout version",
+                  default="2.1.1")
 
 parser.add_option("-t", "--accept-buildout-test-releases",
                   dest='accept_buildout_test_releases',
@@ -78,8 +79,8 @@ except ImportError:
     except ImportError:
         from urllib2 import urlopen
 
-    exec(urlopen('http://python-distribute.org/distribute_setup.py').read(), 
-         ez)
+    exec(urlopen(
+        'http://downloads.buildout.org/2.1/distribute_setup.py').read(), ez)
     setup_args = dict(to_dir=tmpeggs, download_delay=0, no_fake=True)
     ez['use_setuptools'](**setup_args)
 
