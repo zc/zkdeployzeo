@@ -10,6 +10,12 @@ additional types of storages should be easy.
 Release history
 ===============
 
+1.1.1 (2014-09-12)
+------------------
+
+- Update zc.zk & kazoo to avoid slow restarts.
+
+
 1.1.0 (2014-04-09)
 ------------------
 
